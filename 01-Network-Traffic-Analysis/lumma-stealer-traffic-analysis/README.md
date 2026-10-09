@@ -71,3 +71,17 @@ The destination MAC address belonged to the local gateway, while the Layer 3 des
 **Finding:** `10.1.21.58` was associated with MAC address `00:21:5d:c8:0e:f2`.
 
 ![MAC address attribution](images/02-mac-address-attribution.png)
+
+### Evidence 03 — Hostname Identification
+
+Local Windows name-resolution traffic was examined to determine the hostname associated with the identified system.
+
+The host `10.1.21.58`, associated with MAC address `00:21:5d:c8:0e:f2`, generated NetBIOS Name Service registration traffic containing:
+
+`DESKTOP-ES9F3ML`
+
+The same hostname was also observed in LLMNR traffic, providing additional correlation between the IP address, network interface, and Windows host identity.
+
+**Finding:** The hostname associated with `10.1.21.58` was `DESKTOP-ES9F3ML`.
+
+![Hostname identification using NBNS and LLMNR](images/03-hostname-identification.png)
