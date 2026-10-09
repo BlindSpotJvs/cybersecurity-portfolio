@@ -39,3 +39,21 @@ The investigation began by filtering the packet capture using the known IP addre
 
 ```wireshark
 ip.addr == 153.92.1.49 && tcp.port == 80
+
+## Initial IOC Pivot
+
+The investigation began by filtering the packet capture using the known IP address and port:
+
+```wireshark
+ip.addr == 153.92.1.49 && tcp.port == 80
+```
+
+The resulting traffic showed repeated communication between `153.92.1.49` and the internal host `10.1.21.58`.
+
+**Finding:** `10.1.21.58` was identified as the primary host of interest.
+
+### Evidence 01 — IOC Pivot and Internal Host Identification
+
+The known external IOC `153.92.1.49:80` was used as the starting point for the investigation. Filtering the packet capture revealed repeated bidirectional communication with the internal host `10.1.21.58`.
+
+![IOC pivot identifying the internal host](images/01-initial-ioc-internal-host.png)
