@@ -282,6 +282,17 @@ This directly matched the domain-to-IP relationship observed in the packet captu
 
 VirusTotal also showed a large number of files historically communicating with `whitepepper.su` and `153.92.1.49`.
 
+### Malware Sample Pivot
+
+A passive pivot from `whitepepper.su` identified a separate Windows executable that had communicated with the same domain.
+
+The sample was not observed during the original incident and was first seen after the incident timeframe; therefore, it was not treated as the malware binary responsible for the compromised host.
+
+However, behavioral analysis of the sample showed communication with `whitepepper.su`, and crowdsourced IDS results included Emerging Threats signatures explicitly identifying the domain as associated with Lumma Stealer command-and-control activity.
+
+![Lumma domain corroboration](images/10c-lumma-domain-corroboration.png)
+
+**Assessment:** This sample does not establish the infection source for the investigated host, but it provides independent threat-intelligence corroboration that `whitepepper.su` has been observed in Lumma Stealer-related network activity.
 Several Windows executables associated with the infrastructure had high multi-engine detection rates, providing additional context that the infrastructure had been observed in association with suspicious or malicious files.
 
 ![VirusTotal communicating files](images/10b-virustotal-communicating-files.png)
