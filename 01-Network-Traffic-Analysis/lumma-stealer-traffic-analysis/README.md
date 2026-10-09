@@ -85,3 +85,32 @@ The same hostname was also observed in LLMNR traffic, providing additional corre
 **Finding:** The hostname associated with `10.1.21.58` was `DESKTOP-ES9F3ML`.
 
 ![Hostname identification using NBNS and LLMNR](images/03-hostname-identification.png)
+
+### Evidence 04 — Account Attribution via Kerberos
+
+Kerberos authentication traffic between the host of interest and the domain controller was analysed to identify the Windows account associated with the system.
+
+An Authentication Service Request (AS-REQ) originating from `10.1.21.58` to the domain controller `10.1.21.2` contained the Kerberos client principal:
+
+`gwyatt`
+
+The request was associated with the `WIN11OFFICE` realm and also contained the previously identified hostname `DESKTOP-ES9F3ML`, further correlating the host and account information.
+
+**Finding:** The Windows account associated with the host was `gwyatt`.
+
+![Kerberos account attribution](images/04-kerberos-account-attribution.png)
+
+### Evidence 05 — Full Name Attribution via SAMR
+
+After identifying the Windows account `gwyatt`, Security Account Manager Remote (SAMR) traffic was analysed to resolve the account to a full user identity.
+
+A `QueryUserInfo` response from the domain controller `10.1.21.2` contained:
+
+- Account Name: `gwyatt`
+- Full Name: `Gabriel Wyatt`
+
+This completed the correlation between the affected system and the associated Windows user account.
+
+**Finding:** The account `gwyatt` was associated with the user `Gabriel Wyatt`.
+
+![SAMR full name attribution](images/05-samr-full-name-attribution.png)
