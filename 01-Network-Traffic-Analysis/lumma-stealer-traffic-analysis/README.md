@@ -128,3 +128,29 @@ The same traffic also included requests to the `/api/set_agent` endpoint with cl
 **Finding:** The domain associated with the suspicious traffic to `153.92.1.49` was `whitepepper.su`.
 
 ![C2 domain identification](images/06-c2-domain-identification.png)
+
+### Evidence 07 — Victim Fingerprinting Payload
+
+The suspicious HTTP POST traffic was examined to determine what information the affected host transmitted to the remote infrastructure.
+
+A POST request from `10.1.21.58` to `whitepepper.su` used the endpoint `/api/set_agent` and transmitted approximately `7,975` bytes of URL-encoded data.
+
+The submitted form contained multiple categories of client information, including:
+
+- System and browser information
+- WebGL and graphics information
+- Canvas fingerprint data
+- Network characteristics
+- Screen resolution and color depth
+- Hardware characteristics
+- Language settings
+- Installed/common fonts
+- WebRTC information
+- Audio characteristics
+- Browser capabilities and plugins
+
+The traffic also included a browser-style User-Agent identifying Microsoft Edge, consistent with the `agent=Edge` parameter present in the request.
+
+**Finding:** The host transmitted a detailed browser and system fingerprint to the Lumma-associated infrastructure, consistent with the victim fingerprinting behavior described by the IDS alert.
+
+![Victim fingerprinting payload](images/07-victim-fingerprinting-payload.png)
