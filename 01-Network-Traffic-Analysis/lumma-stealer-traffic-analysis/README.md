@@ -199,3 +199,31 @@ HTTP POST to remote infrastructure
 ```
 
 **Finding:** The remote infrastructure delivered browser-based fingerprinting code that collected detailed client characteristics and transmitted the resulting fingerprint back to the server.
+
+### Evidence 09 — IDS Signature Correlation
+
+The observed HTTP request pattern was compared with the Emerging Threats detection logic for:
+
+`ET MALWARE Lumma Stealer Victim Fingerprinting Activity`
+
+The public Suricata rule (SID `2066606`) looks for HTTP requests whose URI begins with:
+
+`/api/set_agent?id=`
+
+and also contains:
+
+- a 32-character client identifier
+- `&token=`
+- `&description=`
+- `&agent=`
+
+The packet capture contained requests matching this structure:
+
+`/api/set_agent?id=...&token=...&description=&agent=Edge`
+
+This provided direct correlation between the packet-level evidence and the IDS alert that initiated the investigation.
+
+**Finding:** The suspicious HTTP request structure observed in the PCAP matched the public Emerging Threats signature logic associated with Lumma Stealer victim fingerprinting activity.
+
+![IDS signature correlation](images/09-ids-signature-correlation.png)
+Reference: Emerging Threats rule SID 2066606 — `ET MALWARE Lumma Stealer Victim Fingerprinting Activity`
