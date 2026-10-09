@@ -249,3 +249,41 @@ Two browser-related fingerprinting cycles were observed within approximately eig
 The first cycle completed in approximately 0.94 seconds from the initial `/api/set_agent` request to the fingerprint POST. The second cycle completed in approximately 0.36 seconds, with only about 55 milliseconds between receipt of the fingerprinting script and transmission of the resulting POST.
 
 **Finding:** The timing and repetition of the requests indicate automated fingerprint collection rather than ordinary interactive browsing.
+
+## Passive Threat Intelligence
+
+Passive threat intelligence was used to enrich the external indicators identified during packet analysis.
+
+### Infrastructure Enrichment
+
+The IP address `153.92.1.49` belongs to the `153.92.1.0/24` prefix announced by:
+
+- ASN: `AS47583`
+- Organisation: `Hostinger International Limited`
+- RIR: `RIPE NCC`
+
+Infrastructure registration and geolocation data were treated as hosting metadata only and not as evidence of the attacker's physical location.
+
+### Passive DNS Correlation
+
+VirusTotal passive DNS data showed that `whitepepper.su` resolved to:
+
+`153.92.1.49`
+
+on:
+
+`2026-01-27`
+
+This directly matched the domain-to-IP relationship observed in the packet capture during the incident timeframe.
+
+![Passive DNS correlation](images/10a-passive-dns-correlation.png)
+
+### Related File Activity
+
+VirusTotal also showed a large number of files historically communicating with `whitepepper.su` and `153.92.1.49`.
+
+Several Windows executables associated with the infrastructure had high multi-engine detection rates, providing additional context that the infrastructure had been observed in association with suspicious or malicious files.
+
+![VirusTotal communicating files](images/10b-virustotal-communicating-files.png)
+
+**Finding:** Passive threat intelligence independently corroborated the domain and IP relationship identified in the PCAP and showed additional malicious-file associations with the same infrastructure.
