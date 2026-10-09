@@ -154,3 +154,48 @@ The traffic also included a browser-style User-Agent identifying Microsoft Edge,
 **Finding:** The host transmitted a detailed browser and system fingerprint to the Lumma-associated infrastructure, consistent with the victim fingerprinting behavior described by the IDS alert.
 
 ![Victim fingerprinting payload](images/07-victim-fingerprinting-payload.png)
+
+### Evidence 08 — Fingerprinting Script Analysis
+
+The HTTP response delivered by `153.92.1.49` contained JavaScript designed to collect detailed characteristics from the client system.
+
+The script queried multiple browser and system properties, including:
+
+- Operating system and browser information
+- Language and browser settings
+- CPU concurrency and device memory
+- WebGL vendor and renderer information
+- Canvas rendering characteristics
+- Screen and display properties
+- Network characteristics
+- WebRTC information
+- Audio capabilities
+- Browser plugins and additional client features
+
+![Fingerprinting script collecting client characteristics](images/08a-fingerprinting-script-collection.png)
+
+The collected values were then assembled into a `fingerprint` object. Individual data categories were serialized using `JSON.stringify()` and converted into URL-encoded form data using `URLSearchParams`.
+
+The script subsequently transmitted the fingerprint using an HTTP POST request with the content type:
+
+`application/x-www-form-urlencoded`
+
+![Fingerprint assembly and POST submission](images/08b-fingerprinting-script-post.png)
+
+This reconstructed the full fingerprinting workflow observed in the packet capture:
+
+```text
+Remote server
+      ↓
+delivers JavaScript
+      ↓
+collects client characteristics
+      ↓
+builds fingerprint object
+      ↓
+URL-encodes the data
+      ↓
+HTTP POST to remote infrastructure
+```
+
+**Finding:** The remote infrastructure delivered browser-based fingerprinting code that collected detailed client characteristics and transmitted the resulting fingerprint back to the server.
