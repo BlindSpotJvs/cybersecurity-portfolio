@@ -114,3 +114,17 @@ This completed the correlation between the affected system and the associated Wi
 **Finding:** The account `gwyatt` was associated with the user `Gabriel Wyatt`.
 
 ![SAMR full name attribution](images/05-samr-full-name-attribution.png)
+
+### Evidence 06 — C2 Domain Identification
+
+HTTP traffic associated with the external IOC was analysed to identify the domain used during the suspicious communication.
+
+Requests from `10.1.21.58` to `153.92.1.49` contained the HTTP Host header:
+
+`whitepepper.su`
+
+The same traffic also included requests to the `/api/set_agent` endpoint with client-identifying parameters, providing a direct relationship between the external IP address, domain, and observed Lumma-associated activity.
+
+**Finding:** The domain associated with the suspicious traffic to `153.92.1.49` was `whitepepper.su`.
+
+![C2 domain identification](images/06-c2-domain-identification.png)
