@@ -227,3 +227,25 @@ This provided direct correlation between the packet-level evidence and the IDS a
 
 ![IDS signature correlation](images/09-ids-signature-correlation.png)
 Reference: Emerging Threats rule SID 2066606 — `ET MALWARE Lumma Stealer Victim Fingerprinting Activity`
+
+## Attack Timeline
+
+The packet capture was reconstructed chronologically to understand the sequence of communication between the affected host and the Lumma-associated infrastructure.
+
+All times below are presented in UTC.
+
+| Time (UTC) | Event |
+|---|---|
+| `23:05:38.454631` | First observed TCP connection attempt from `10.1.21.58` to `153.92.1.49:80`. |
+| `23:05:39.253477` | The host requested `/api/set_agent` from `whitepepper.su` with `agent=Chrome`. |
+| `23:05:39.577486` | The server returned an HTTP 200 response containing the JavaScript fingerprinting code. |
+| `23:05:40.196821` | The host transmitted the collected Chrome-related fingerprint using an HTTP POST request. |
+| `23:05:47.099514` | A second `/api/set_agent` request was generated with `agent=Edge`. |
+| `23:05:47.407929` | The server returned the fingerprinting JavaScript for the Edge-related session. |
+| `23:05:47.463142` | The Edge-related fingerprint was transmitted back to the remote infrastructure. |
+
+Two browser-related fingerprinting cycles were observed within approximately eight seconds.
+
+The first cycle completed in approximately 0.94 seconds from the initial `/api/set_agent` request to the fingerprint POST. The second cycle completed in approximately 0.36 seconds, with only about 55 milliseconds between receipt of the fingerprinting script and transmission of the resulting POST.
+
+**Finding:** The timing and repetition of the requests indicate automated fingerprint collection rather than ordinary interactive browsing.
