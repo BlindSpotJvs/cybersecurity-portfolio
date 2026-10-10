@@ -1,0 +1,1 @@
+alert http $HOME_NET any -> $EXTERNAL_NET any (msg:"LAB Possible Lumma-style victim fingerprinting submission via /api/set_agent"; flow:established,to_server; http.method; content:"POST"; http.uri; content:"/api/set_agent"; startswith; content:"id="; content:"token="; content:"agent="; sid:1000001; rev:2;)
