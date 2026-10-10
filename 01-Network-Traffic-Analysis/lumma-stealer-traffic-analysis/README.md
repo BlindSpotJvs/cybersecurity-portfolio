@@ -298,3 +298,42 @@ Several Windows executables associated with the infrastructure had high multi-en
 ![VirusTotal communicating files](images/10b-virustotal-communicating-files.png)
 
 **Finding:** Passive threat intelligence independently corroborated the domain and IP relationship identified in the PCAP and showed additional malicious-file associations with the same infrastructure.
+
+## Custom Detection Engineering
+
+Following the network investigation, a custom Suricata signature was developed to detect the observed victim-fingerprinting behavior.
+
+The initial rule matched HTTP requests to `/api/set_agent` containing the parameters `id`, `token`, and `agent`.
+
+### Detection Tuning
+
+The first revision generated **four alerts** because both GET and POST requests matched the detection logic.
+
+Analysis of the HTTP transactions showed that the victim fingerprint data was specifically submitted using POST requests. The rule was therefore refined to include the HTTP method.
+
+```suricata
+alert http $HOME_NET any -> $EXTERNAL_NET any (msg:"LAB Possible Lumma-style victim fingerprinting submission via /api/set_agent"; flow:established,to_server; http.method; content:"POST"; http.uri; content:"/api/set_agent"; startswith; content:"id="; content:"token="; content:"agent="; sid:1000001; rev:2;)
+```
+
+### Validation
+
+The revised signature was tested against the original PCAP using Suricata in offline analysis mode.
+
+The final rule generated exactly **two alerts**, corresponding to the two observed fingerprint-submission transactions from the infected host:
+
+- `10.1.21.58:54492 -> 153.92.1.49:80`
+- `10.1.21.58:49295 -> 153.92.1.49:80`
+
+This reduced the alert volume from **four events to two more precise detections** while preserving the behavior of interest.
+
+![Custom Suricata detection validation](images/11-suricata-custom-detection-validation.png)
+
+### Detection Result
+
+**Rule SID:** `1000001`  
+**Revision:** `2`  
+**Alerts generated:** `2`  
+**Source host:** `10.1.21.58`  
+**Destination:** `153.92.1.49:80`
+
+The result demonstrates the process of moving from packet-level investigation to behavioral detection and subsequent signature tuning.
